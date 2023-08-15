@@ -5,13 +5,19 @@ class Player {
         this.height = 100
         this.x = this.game.width * 0.5 - this.width * 0.5
         this.y = this.game.height -this.height
-        this.speed = 5
+        this.speed = 10
     }
     draw(context){
         context.fillRect(this.x,this.y,this.width,this.height)
     }
     update(){
-        this.x += this.speed
+        // horizontal movements
+        this.game.keys.indexOf('ArrowLeft') > -1 ? this.x -= this.speed : "" 
+        this.game.keys.indexOf('ArrowRight') > -1 ? this.x += this.speed : "" 
+
+        // horizontal boundaries
+        if(this.x < 0) this.x = 0
+        else if(this.x > this.game.width - this.width) this.x = this.game.width - this.width
     }
 }
 
@@ -31,7 +37,17 @@ class Game {
         this.width = this.canvas.width
         this.height = this.canvas.height
         this.player = new Player(this)
+        this.keys = []
+        // EVENT LISTENER 
+        window.addEventListener('keydown',(e)=>{
+            this.keys.indexOf(e.key) === -1 && this.keys.push(e.key)
+        }) 
+        window.addEventListener('keyup',(e)=>{
+            let index = this.keys.indexOf(e.key)
+            index > -1 && this.keys.splice(index,1)
+        })
     }
+
     render(context){
         this.player.draw(context);
         this.player.update()
